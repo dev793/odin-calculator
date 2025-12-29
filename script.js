@@ -33,7 +33,13 @@ function operate(operator, a, b) {
         case "*":
             return multiply(a, b);
         case "/":
-            return divide(a, b); // TODO: handle divide by 0 here
+            if (b == 0) {
+                alert("You can't divide by 0!");
+                return "";
+                
+            } else {
+                return divide(a, b);
+            }
     }
 }
 
@@ -41,9 +47,28 @@ function updateDisplay(value) {
     display.textContent = value;
 }
 
+function clear() {
+    operand1 = "";
+    operand2 = "";
+    operator = "";
+    updateDisplay("0");
+}
+
+function roundResult(number) {
+    if (number != "") {
+        return Math.round(number * 1000) / 1000;
+    } else {
+        return "";
+    }
+}
+
 function handleClick(event) {
     const inputValue = event.target.textContent;
     console.log(inputValue);
+
+    if (inputValue == "C") {
+        clear()
+    }
 
     //if button press is a number
     if (Number.isInteger(Number(inputValue))) {
@@ -64,21 +89,21 @@ function handleClick(event) {
 
         if (operand1 != "") {
             if (operand2 == "") {
-                operator = inputValue;
-                updateDisplay(operator);
-                //TODO: handle pressing "=" at this point
+                if (inputValue != "=") {
+                    operator = inputValue;
+                    updateDisplay(operator);
+                }               
             } else {
-                operand1 = operate(operator, operand1, operand2);
+                operand1 = roundResult(operate(operator, operand1, operand2));
                 operand2 = "";
                 operator = inputValue;
+                if (operand1 == "") {
+                    clear();
+                }
                 updateDisplay(operand1);
             }
         }
     }
-    console.log("Operand 1: " + operand1);
-    console.log("Operand 2: " + operand2);
-    console.log("Operator: " + operator);
-
 }
 
 buttons.addEventListener("click", handleClick);
